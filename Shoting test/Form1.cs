@@ -15,35 +15,15 @@ namespace Shoting_test
         public Form1()
         {
             InitializeComponent();
-            //asdfas
         }
-
-        Rectangle[] projectiles = new Rectangle[60];
-        int projectileNum = 0;
-        bool ProjectileExists = false;
-        int Energy = 40;
-        int SpeedX = 0, SpeedY = 0, PosPlayerX = 300, PosPlayerY = 300;
-        double[] dx = new double[60], dy = new double[60];
 
         private void Form1_Shown(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Maximized;
         }
 
-        private void Form1_MouseDown(object sender, MouseEventArgs e)
-        {
-            //projectile
-            if (Energy > 0)
-            {
-                dx[projectileNum] = e.X - PosPlayerX; dy[projectileNum] = PosPlayerY - e.Y;
 
-                projectiles[projectileNum] = new Rectangle(PosPlayerX + 5, PosPlayerY + 5, 6, 6);
-                projectileNum++;
-                Energy--;
-                ProjectileExists = true;
-            }
-        }
-
+        int SpeedX = 0, SpeedY = 0;
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
@@ -64,6 +44,37 @@ namespace Shoting_test
             }
         }
 
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.W || e.KeyCode == Keys.S)
+            {
+                SpeedY = 0;
+            }
+            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.A || e.KeyCode == Keys.D)
+            {
+                SpeedX = 0;
+            }
+        }
+
+        Rectangle[] projectiles = new Rectangle[60];
+        int projectileNum = 0;
+        bool ProjectileExists = false;
+        int Energy = 40;
+        int PosPlayerX = 300, PosPlayerY = 300;
+        double[] dx = new double[60], dy = new double[60];
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (Energy > 0)
+            {
+                dx[projectileNum] = e.X - PosPlayerX; dy[projectileNum] = PosPlayerY - e.Y;
+
+                projectiles[projectileNum] = new Rectangle(PosPlayerX + 5, PosPlayerY + 5, 6, 6);
+                projectileNum++;
+                Energy--;
+                ProjectileExists = true;
+            }
+        }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             Graphics g = CreateGraphics();
@@ -73,7 +84,6 @@ namespace Shoting_test
             PosPlayerY += SpeedY;
             g.FillRectangle(Brushes.Black, PosPlayerX, PosPlayerY, 16, 16);
 
-            //projectile
             if (ProjectileExists)
             {
                 for (int i = 0; i < projectileNum; i++)
@@ -107,18 +117,6 @@ namespace Shoting_test
             }
 
             label1.Text = string.Format("{0} projectiles", Energy);
-        }
-
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.W || e.KeyCode == Keys.S)
-            {
-                SpeedY = 0;
-            }
-            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.A || e.KeyCode == Keys.D)
-            {
-                SpeedX = 0;
-            }
         }
     }
 }
