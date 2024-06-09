@@ -12,6 +12,9 @@ namespace Shoting_test
 {
     public partial class Form1 : Form
     {
+        Player p1 = new Player(Color.Black, 300, 300, 0, 0);
+        Projectile prj = new Projectile(Color.Red, 40);
+        Projectile bomb = new Projectile(Color.DarkGray, 4);
         public Form1()
         {
             InitializeComponent();
@@ -22,56 +25,25 @@ namespace Shoting_test
             WindowState = FormWindowState.Maximized;
         }
 
-
-        int SpeedX = 0, SpeedY = 0;
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
-            {
-                SpeedY = -2;
-            }
-            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
-            {
-                SpeedX = -2;
-            }
-            if (e.KeyCode == Keys.Down || e.KeyCode == Keys.S)
-            {
-                SpeedY = 2;
-            }
-            if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
-            {
-                SpeedX = 2;
-            }
+            p1.MoveStart(e);
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.W || e.KeyCode == Keys.S)
-            {
-                SpeedY = 0;
-            }
-            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.A || e.KeyCode == Keys.D)
-            {
-                SpeedX = 0;
-            }
+            p1.MoveEnd(e);
         }
-
-        Rectangle[] projectiles = new Rectangle[60];
-        int projectileNum = 0;
-        bool ProjectileExists = false;
-        int Energy = 40;
-        int PosPlayerX = 300, PosPlayerY = 300;
-        double[] dx = new double[60], dy = new double[60];
+        
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            if (Energy > 0)
+            if(e.Button == MouseButtons.Left)
             {
-                dx[projectileNum] = e.X - PosPlayerX; dy[projectileNum] = PosPlayerY - e.Y;
-
-                projectiles[projectileNum] = new Rectangle(PosPlayerX + 5, PosPlayerY + 5, 6, 6);
-                projectileNum++;
-                Energy--;
-                ProjectileExists = true;
+                prj.Shoot(e, p1);
+            }
+            else if(e.Button == MouseButtons.Right)
+            {
+                bomb.Shoot(e, p1);
             }
         }
 
@@ -79,44 +51,12 @@ namespace Shoting_test
         {
             Graphics g = CreateGraphics();
 
-            g.FillRectangle(new SolidBrush(BackColor), PosPlayerX, PosPlayerY, 16, 16);
-            PosPlayerX += SpeedX;
-            PosPlayerY += SpeedY;
-            g.FillRectangle(Brushes.Black, PosPlayerX, PosPlayerY, 16, 16);
+            p1.MovePlayer(g, BackColor);
 
-            if (ProjectileExists)
-            {
-                for (int i = 0; i < projectileNum; i++)
-                {
-                    g.FillRectangle(new SolidBrush(BackColor), projectiles[i]);
-                    double slope = Math.Abs(dy[i] / dx[i]);
-                    double k = 6 / Math.Sqrt((double)(16 + 16 * slope * slope));
-                    projectiles[i].Location = new Point((int)(projectiles[i].X + 4 * Math.Sign(dx[i]) * k), (int)(projectiles[i].Y + 4 * slope * Math.Sign(-dy[i]) * k));
-                    g.FillRectangle(Brushes.Red, projectiles[i]);
-                }
-                for (int i = 0; i < projectileNum; i++)
-                {
-                    if (projectiles[i].X >= -6 && projectiles[i].X <= ClientSize.Width + 6 && projectiles[i].Y >= -6 && projectiles[i].Y <= ClientSize.Height + 6)
-                    {
-                        ProjectileExists = true;
-                        break;
-                    }
-                    else
-                    {
-                        ProjectileExists = false;
-                    }
-                }
-            }
-            else
-            {
-                projectileNum = 0;
-                if (Energy < 40)
-                {
-                    Energy++;
-                }
-            }
+            prj.MoveProjectile(g, BackColor, ClientSize.Width, ClientSize.Height);
+            bomb.MoveProjectile(g, BackColor, ClientSize.Width, ClientSize.Height);
 
-            label1.Text = string.Format("{0} projectiles", Energy);
+            label1.Text = string.Format("{0} projectiles left; {1} bombs left", prj.CurrentEnergy, bomb.CurrentEnergy);
         }
     }
 }
