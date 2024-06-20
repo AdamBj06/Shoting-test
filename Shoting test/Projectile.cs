@@ -48,7 +48,7 @@ namespace Shoting_test
         {
             if (CurrentEnergy > 0)
             {
-                Direction[ProjectileNum] = new Vettore(e.X - p.PosPlayer.X, p.PosPlayer.Y - e.Y).Versore();
+                Direction[ProjectileNum] = new Vettore(e.X - p.PosPlayer.X + 8, p.PosPlayer.Y + 8 - e.Y).Versore();
 
                 Projectiles[ProjectileNum] = new RectangleF((float)p.PosPlayer.X + 8, (float)p.PosPlayer.Y + 8, Size, Size);
                 ProjectileNum++;
@@ -63,6 +63,7 @@ namespace Shoting_test
                 Direction[i] = Direction[i].Versore();
                 Projectiles[i] = new RectangleF((float)p.PosPlayer.X + 8, (float)p.PosPlayer.Y + 8, Size, Size);
             }
+            ProjectileNum = Projectiles.Length;
             ProjectileExists = true;
         }
         public void MoveProjectile(Graphics g, Color background, int BorderX, int BorderY)
