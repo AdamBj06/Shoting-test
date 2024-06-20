@@ -13,35 +13,57 @@ namespace Shoting_test
     public class Projectile
     {
         public Color Color { get; }
+        public int Size { get; set; }
+        public double Speed { get; set; }
         public int Energy { get; }
         public int CurrentEnergy { get; set;}
-        private Rectangle[] Projectiles { get; set; }
+        private RectangleF[] Projectiles { get; set; }
         private int ProjectileNum { get; set; }
         private bool ProjectileExists { get; set; }
         public Vettore[] Direction { get; set; }
-        public double Speed { get; set; }
-        public Projectile(Color c, int en, double s)
+        private bool SetPrj { get; set; }
+        public Projectile(Color color, int size, double speed, int energy)
         {
-            Color = c;
-            Energy = en;
-            CurrentEnergy = en;
-            Projectiles = new Rectangle[en];
+            Color = color;
+            Size = size;
+            Speed = speed;
+            Energy = energy;
+            CurrentEnergy = Energy;
+            Projectiles = new RectangleF[Energy];
             ProjectileNum = 0;
             ProjectileExists = false;
-            Direction = new Vettore[en];
-            Speed = s;
+            Direction = new Vettore[Energy];
+        }
+        public Projectile(Vettore[] direction, Color color, int size, double speed)
+        {
+            Direction = direction;
+            Color = color;
+            Size = size;
+            Speed = speed;
+            Projectiles = new RectangleF[direction.Length];
+            ProjectileExists = false;
+            SetPrj = true;
         }
         public void Shoot(MouseEventArgs e, Player p)
         {
             if (CurrentEnergy > 0)
             {
-                Direction[ProjectileNum] = new Vettore(e.X - p.PosPlayer.X, e.Y - p.PosPlayer.Y).Versore();
+                Direction[ProjectileNum] = new Vettore(e.X - p.PosPlayer.X, p.PosPlayer.Y - e.Y).Versore();
 
-                Projectiles[ProjectileNum] = new Rectangle((int)p.PosPlayer.X + 5, (int)p.PosPlayer.Y + 5, 6, 6);
+                Projectiles[ProjectileNum] = new RectangleF((float)p.PosPlayer.X + 8, (float)p.PosPlayer.Y + 8, Size, Size);
                 ProjectileNum++;
                 CurrentEnergy--;
                 ProjectileExists = true;
             }
+        }
+        public void Shoot(Player p)
+        {
+            for(int i = 0; i < Projectiles.Length; i++)
+            {
+                Direction[i] = Direction[i].Versore();
+                Projectiles[i] = new RectangleF((float)p.PosPlayer.X + 8, (float)p.PosPlayer.Y + 8, Size, Size);
+            }
+            ProjectileExists = true;
         }
         public void MoveProjectile(Graphics g, Color background, int BorderX, int BorderY)
         {
@@ -50,12 +72,12 @@ namespace Shoting_test
                 for (int i = 0; i < ProjectileNum; i++)
                 {
                     g.FillRectangle(new SolidBrush(background), Projectiles[i]);
-                    Projectiles[i].Location = new Point((int)(Projectiles[i].X + Speed * Direction[i].X), (int)(Projectiles[i].Y + Speed * Direction[i].Y));
+                    Projectiles[i].Location = new PointF((float)(Projectiles[i].X + Speed * Direction[i].X), (float)(Projectiles[i].Y + Speed * (-Direction[i].Y)));
                     g.FillRectangle(new SolidBrush(Color), Projectiles[i]);
                 }
                 for (int i = 0; i < ProjectileNum; i++)
                 {
-                    if (Projectiles[i].X >= -6 && Projectiles[i].X <= BorderX + 6 && Projectiles[i].Y >= -6 && Projectiles[i].Y <= BorderY + 6)
+                    if (Projectiles[i].X >= -Size && Projectiles[i].X <= BorderX + Size && Projectiles[i].Y >= -Size && Projectiles[i].Y <= BorderY + Size)
                     {
                         ProjectileExists = true;
                         break;
@@ -66,7 +88,7 @@ namespace Shoting_test
                     }
                 }
             }
-            else
+            else if(!SetPrj)
             {
                 ProjectileNum = 0;
                 if (CurrentEnergy < Energy)

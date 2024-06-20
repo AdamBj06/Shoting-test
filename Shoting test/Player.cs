@@ -14,9 +14,9 @@ namespace Shoting_test
         public Color Color { get; set;}
         public Vettore PosPlayer { get; set; }
         public Vettore Speed { get; set; }
-        public Player(Color c, Vettore initialPos, Vettore intialSpeed) 
+        public Player(Color color, Vettore initialPos, Vettore intialSpeed) 
         {
-            Color = c;
+            Color = color;
             Speed = intialSpeed;
             PosPlayer = initialPos;
         }
