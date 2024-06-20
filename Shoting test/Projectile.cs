@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Vettori;
 
 namespace Shoting_test
 {
@@ -16,9 +18,9 @@ namespace Shoting_test
         private Rectangle[] Projectiles { get; set; }
         private int ProjectileNum { get; set; }
         private bool ProjectileExists { get; set; }
-        private double[] dx { get; set; }
-        private double[] dy { get; set; }
-        public Projectile(Color c, int en)
+        public Vettore[] Direction { get; set; }
+        public double Speed { get; set; }
+        public Projectile(Color c, int en, double s)
         {
             Color = c;
             Energy = en;
@@ -26,15 +28,16 @@ namespace Shoting_test
             Projectiles = new Rectangle[en];
             ProjectileNum = 0;
             ProjectileExists = false;
-            dx = new double[en]; dy = new double[en];
+            Direction = new Vettore[en];
+            Speed = s;
         }
         public void Shoot(MouseEventArgs e, Player p)
         {
             if (CurrentEnergy > 0)
             {
-                dx[ProjectileNum] = e.X - p.PosPlayerX; dy[ProjectileNum] = p.PosPlayerY - e.Y;
+                Direction[ProjectileNum] = new Vettore(e.X - p.PosPlayer.X, e.Y - p.PosPlayer.Y).Versore();
 
-                Projectiles[ProjectileNum] = new Rectangle(p.PosPlayerX + 5, p.PosPlayerY + 5, 6, 6);
+                Projectiles[ProjectileNum] = new Rectangle((int)p.PosPlayer.X + 5, (int)p.PosPlayer.Y + 5, 6, 6);
                 ProjectileNum++;
                 CurrentEnergy--;
                 ProjectileExists = true;
@@ -47,9 +50,7 @@ namespace Shoting_test
                 for (int i = 0; i < ProjectileNum; i++)
                 {
                     g.FillRectangle(new SolidBrush(background), Projectiles[i]);
-                    double slope = Math.Abs(dy[i] / dx[i]);
-                    double k = 6 / Math.Sqrt((double)(16 + 16 * slope * slope));
-                    Projectiles[i].Location = new Point((int)(Projectiles[i].X + 4 * Math.Sign(dx[i]) * k), (int)(Projectiles[i].Y + 4 * slope * Math.Sign(-dy[i]) * k));
+                    Projectiles[i].Location = new Point((int)(Projectiles[i].X + Speed * Direction[i].X), (int)(Projectiles[i].Y + Speed * Direction[i].Y));
                     g.FillRectangle(new SolidBrush(Color), Projectiles[i]);
                 }
                 for (int i = 0; i < ProjectileNum; i++)

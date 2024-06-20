@@ -7,14 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Vettori;
 
 namespace Shoting_test
 {
     public partial class Form1 : Form
     {
-        Player p1 = new Player(Color.Black, 300, 300, 0, 0);
-        Projectile prj = new Projectile(Color.Red, 40);
-        Projectile bomb = new Projectile(Color.DarkGray, 4);
+        Player p1 = new Player(Color.Black, new Vettore(300, 300), new Vettore(0, 0));
+        Projectile prj = new Projectile(Color.Red, 40, 6);
+        Projectile bomb = new Projectile(Color.DarkGray, 4, 6);
         public Form1()
         {
             InitializeComponent();

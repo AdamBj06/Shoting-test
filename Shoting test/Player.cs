@@ -5,58 +5,57 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Vettori;
 
 namespace Shoting_test
 {
     public class Player
     {
         public Color Color { get; set;}
-        public int PosPlayerX { get; set; }
-        public int PosPlayerY { get; set; }
-        public int SpeedX { get; set; }
-        public int SpeedY { get; set; }
-        public Player(Color c,int initialPosX, int initialPosY, int intialSpeedX, int initialSpeedY) 
+        public Vettore PosPlayer { get; set; }
+        public Vettore Speed { get; set; }
+        public Player(Color c, Vettore initialPos, Vettore intialSpeed) 
         {
             Color = c;
-            SpeedX = intialSpeedX; SpeedY = initialSpeedY;
-            PosPlayerX = initialPosX; PosPlayerY = initialPosY;
+            Speed = intialSpeed;
+            PosPlayer = initialPos;
         }
         public void MoveStart(KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
             {
-                SpeedY = -2;
+                Speed.Y = -2;
             }
             if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
             {
-                SpeedX = -2;
+                Speed.X = -2;
             }
             if (e.KeyCode == Keys.Down || e.KeyCode == Keys.S)
             {
-                SpeedY = 2;
+                Speed.Y = 2;
             }
             if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
             {
-                SpeedX = 2;
+                Speed.X = 2;
             }
         }
         public void MoveEnd(KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.W || e.KeyCode == Keys.S)
             {
-                SpeedY = 0;
+                Speed.Y = 0;
             }
             if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.A || e.KeyCode == Keys.D)
             {
-                SpeedX = 0;
+                Speed.X = 0;
             }
         }
         public void MovePlayer(Graphics g, Color background)
         {
-            g.FillRectangle(new SolidBrush(background), PosPlayerX, PosPlayerY, 16, 16);
-            PosPlayerX += SpeedX;
-            PosPlayerY += SpeedY;
-            g.FillRectangle(new SolidBrush(Color), PosPlayerX, PosPlayerY, 16, 16);
+            g.FillRectangle(new SolidBrush(background), (float)PosPlayer.X, (float)PosPlayer.Y, 16, 16);
+            PosPlayer.X += Speed.X;
+            PosPlayer.Y += Speed.Y;
+            g.FillRectangle(new SolidBrush(Color), (float)PosPlayer.X, (float)PosPlayer.Y, 16, 16);
         }
     }
 }
