@@ -15,13 +15,13 @@ namespace Shoting_test
         public Color Color { get; }
         public int Size { get; set; }
         public double Speed { get; set; }
-        public int Energy { get; }
+        public int Energy { get; set; }
+        public int MaxEnergy { get; set; }
         public int CurrentEnergy { get; set;}
-        private RectangleF[] Projectiles { get; set; }
+        public RectangleF[] Projectiles { get; set; }
         private int ProjectileNum { get; set; }
         private bool ProjectileExists { get; set; }
         public Vettore[] Direction { get; set; }
-        private bool SetPrj { get; set; }
         public Projectile(Color color, int size, double speed, int energy)
         {
             Color = color;
@@ -34,37 +34,42 @@ namespace Shoting_test
             ProjectileExists = false;
             Direction = new Vettore[Energy];
         }
-        public Projectile(Vettore[] direction, Color color, int size, double speed)
+        public Projectile(Color color, int size, double speed, int initialEnergy, int maxEnergy)
         {
-            Direction = direction;
             Color = color;
             Size = size;
             Speed = speed;
-            Projectiles = new RectangleF[direction.Length];
+            Energy = initialEnergy;
+            MaxEnergy = maxEnergy;
+            CurrentEnergy = Energy;
+            Projectiles = new RectangleF[maxEnergy];
+            ProjectileNum = 0;
             ProjectileExists = false;
-            SetPrj = true;
+            Direction = new Vettore[maxEnergy];
         }
-        public void Shoot(MouseEventArgs e, Player p)
+        public void Shoot(int mx, int my, Player p)
         {
             if (CurrentEnergy > 0)
             {
-                Direction[ProjectileNum] = new Vettore(e.X - p.PosPlayer.X + 8, p.PosPlayer.Y + 8 - e.Y).Versore();
+                Direction[ProjectileNum] = new Vettore(mx - p.PosPlayer.X, p.PosPlayer.Y + p.Size / 2 - my).Versore();
 
-                Projectiles[ProjectileNum] = new RectangleF((float)p.PosPlayer.X + 8, (float)p.PosPlayer.Y + 8, Size, Size);
+                Projectiles[ProjectileNum] = new RectangleF((float)p.PosPlayer.X + p.Size / 2, (float)p.PosPlayer.Y + p.Size / 2, Size, Size);
                 ProjectileNum++;
                 CurrentEnergy--;
                 ProjectileExists = true;
             }
         }
-        public void Shoot(Player p)
+        public void Shoot(Vettore direction, Player p)
         {
-            for(int i = 0; i < Projectiles.Length; i++)
+            if (CurrentEnergy > 0)
             {
-                Direction[i] = Direction[i].Versore();
-                Projectiles[i] = new RectangleF((float)p.PosPlayer.X + 8, (float)p.PosPlayer.Y + 8, Size, Size);
+                Direction[ProjectileNum] = direction.Versore();
+
+                Projectiles[ProjectileNum] = new RectangleF((float)p.PosPlayer.X + p.Size / 2, (float)p.PosPlayer.Y + p.Size / 2, Size, Size);
+                ProjectileNum++;
+                CurrentEnergy--;
+                ProjectileExists = true;
             }
-            ProjectileNum = Projectiles.Length;
-            ProjectileExists = true;
         }
         public void MoveProjectile(Graphics g, Color background, int BorderX, int BorderY)
         {
@@ -89,7 +94,7 @@ namespace Shoting_test
                     }
                 }
             }
-            else if(!SetPrj)
+            else
             {
                 ProjectileNum = 0;
                 if (CurrentEnergy < Energy)

@@ -12,11 +12,13 @@ namespace Shoting_test
     public class Player
     {
         public Color Color { get; set;}
+        public int Size { get; set;}
         public Vettore PosPlayer { get; set; }
         public Vettore Speed { get; set; }
-        public Player(Color color, Vettore initialPos, Vettore intialSpeed) 
+        public Player(Color color, int size, Vettore initialPos, Vettore intialSpeed) 
         {
             Color = color;
+            Size = size;
             Speed = intialSpeed;
             PosPlayer = initialPos;
         }
@@ -52,10 +54,10 @@ namespace Shoting_test
         }
         public void MovePlayer(Graphics g, Color background)
         {
-            g.FillRectangle(new SolidBrush(background), (float)PosPlayer.X, (float)PosPlayer.Y, 16, 16);
+            g.FillRectangle(new SolidBrush(background), (float)PosPlayer.X, (float)PosPlayer.Y, Size, Size);
             PosPlayer.X += Speed.X;
             PosPlayer.Y += Speed.Y;
-            g.FillRectangle(new SolidBrush(Color), (float)PosPlayer.X, (float)PosPlayer.Y, 16, 16);
+            g.FillRectangle(new SolidBrush(Color), (float)PosPlayer.X, (float)PosPlayer.Y, Size, Size);
         }
     }
 }
