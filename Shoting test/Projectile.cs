@@ -12,7 +12,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace Shoting_test
 {
-    public class Projectile
+    public class Projectile : IFormattable
     {
         public string Name { get; set; }
         public Color Color { get; }

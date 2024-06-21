@@ -11,7 +11,7 @@ using Vettori;
 
 namespace Shoting_test
 {
-    public class Player
+    public class Player : IFormattable
     {
         public Color Color { get; set;}
         public int Size { get; set;}
