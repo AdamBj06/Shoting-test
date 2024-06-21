@@ -107,7 +107,7 @@ namespace Shoting_test
             special.MoveProjectile(g, BackColor, ClientSize.Width, ClientSize.Height);
             special2.MoveProjectile(g, BackColor, ClientSize.Width, ClientSize.Height);
 
-            label1.Text = string.Format("{0}/{3} projectiles left; {1}/{4} bombs left; {2}/{5} special left; {6}/{7} special2 left"
+            label1.Text = string.Format("{0}/{3} projectiles left; {1}/{4} bombs left; {2}/{5} special left; {6}/{7} 2° special left"
                                         , prj.CurrentEnergy, bomb.CurrentEnergy, special.CurrentEnergy / 4, prj.Energy, bomb.Energy, special.Energy / 4
                                         , special2.CurrentEnergy / 3, special2.Energy / 3);
         }
