@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Vettori;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace Shoting_test
 {
     public class Projectile
     {
+        public string Name { get; set; }
         public Color Color { get; }
         public int Size { get; set; }
         public double Speed { get; set; }
@@ -22,8 +25,9 @@ namespace Shoting_test
         private int ProjectileNum { get; set; }
         private bool ProjectileExists { get; set; }
         public Vettore[] Direction { get; set; }
-        public Projectile(Color color, int size, double speed, int energy)
+        public Projectile(string name, Color color, int size, double speed, int energy)
         {
+            Name = name;
             Color = color;
             Size = size;
             Speed = speed;
@@ -34,8 +38,9 @@ namespace Shoting_test
             ProjectileExists = false;
             Direction = new Vettore[Energy];
         }
-        public Projectile(Color color, int size, double speed, int initialEnergy, int maxEnergy)
+        public Projectile(string name, Color color, int size, double speed, int initialEnergy, int maxEnergy)
         {
+            Name = name;
             Color = color;
             Size = size;
             Speed = speed;
@@ -47,13 +52,40 @@ namespace Shoting_test
             ProjectileExists = false;
             Direction = new Vettore[maxEnergy];
         }
+        public override string ToString()
+        {
+            return this.ToString("G", CultureInfo.CurrentCulture);
+        }
+
+        public string ToString(string format)
+        {
+            return this.ToString(format, CultureInfo.CurrentCulture);
+        }
+
+        public string ToString(string format, IFormatProvider provider)
+        {
+            if (string.IsNullOrEmpty(format)) format = "G";
+            if (provider == null) provider = CultureInfo.CurrentCulture;
+
+            switch (format.ToUpperInvariant())
+            {
+                case "G":
+                    return $"{CurrentEnergy}/{Energy} {Name}s left";
+                case "3":
+                    return $"{CurrentEnergy/3}/{Energy/3} {Name}s left";
+                case "4":
+                    return $"{CurrentEnergy/4}/{Energy/4} {Name}s left";
+                default:
+                    throw new FormatException(string.Format("The {0} format string is not supported.", format));
+            }
+        }
         public void Shoot(int mx, int my, Player p)
         {
             if (CurrentEnergy > 0)
             {
-                Direction[ProjectileNum] = new Vettore(mx - p.PosPlayer.X, p.PosPlayer.Y + p.Size / 2 - my).Versore();
+                Direction[ProjectileNum] = new Vettore(mx - p.Position.X, p.Position.Y + p.Size / 2 - my).Versore();
 
-                Projectiles[ProjectileNum] = new RectangleF((float)p.PosPlayer.X + p.Size / 2, (float)p.PosPlayer.Y + p.Size / 2, Size, Size);
+                Projectiles[ProjectileNum] = new RectangleF((float)p.Position.X + p.Size / 2, (float)p.Position.Y + p.Size / 2, Size, Size);
                 ProjectileNum++;
                 CurrentEnergy--;
                 ProjectileExists = true;
@@ -65,7 +97,7 @@ namespace Shoting_test
             {
                 Direction[ProjectileNum] = direction.Versore();
 
-                Projectiles[ProjectileNum] = new RectangleF((float)p.PosPlayer.X + p.Size / 2, (float)p.PosPlayer.Y + p.Size / 2, Size, Size);
+                Projectiles[ProjectileNum] = new RectangleF((float)p.Position.X + p.Size / 2, (float)p.Position.Y + p.Size / 2, Size, Size);
                 ProjectileNum++;
                 CurrentEnergy--;
                 ProjectileExists = true;

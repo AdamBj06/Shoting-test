@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using Vettori;
 
 namespace Shoting_test
@@ -13,7 +15,7 @@ namespace Shoting_test
     {
         public Color Color { get; set;}
         public int Size { get; set;}
-        public Vettore PosPlayer { get; set; }
+        public Vettore Position { get; set; }
         public Vettore Speed { get; set; }
         public int SpeedValue { get; set; }
         public Player(Color color, int size, Vettore initialPos, Vettore intialSpeed, int speedValue) 
@@ -21,8 +23,31 @@ namespace Shoting_test
             Color = color;
             Size = size;
             Speed = intialSpeed;
-            PosPlayer = initialPos;
+            Position = initialPos;
             SpeedValue = speedValue;
+        }
+        public override string ToString()
+        {
+            return this.ToString("G", CultureInfo.CurrentCulture);
+        }
+
+        public string ToString(string format)
+        {
+            return this.ToString(format, CultureInfo.CurrentCulture);
+        }
+
+        public string ToString(string format, IFormatProvider provider)
+        {
+            if (string.IsNullOrEmpty(format)) format = "G";
+            if (provider == null) provider = CultureInfo.CurrentCulture;
+
+            switch (format.ToUpperInvariant())
+            {
+                case "G":
+                    return $"Pos: {Position.X}x, {Position.Y}y; Speed: {Speed.X}x, {Speed.Y}y;";
+                default:
+                    throw new FormatException(string.Format("The {0} format string is not supported.", format));
+            }
         }
         public void MoveStart(KeyEventArgs e, Keys up, Keys down, Keys left, Keys right)
         {
@@ -86,10 +111,10 @@ namespace Shoting_test
         }
         public void MovePlayer(Graphics g, Color background)
         {
-            g.FillRectangle(new SolidBrush(background), (float)PosPlayer.X, (float)PosPlayer.Y, Size, Size);
-            PosPlayer.X += Speed.X;
-            PosPlayer.Y += Speed.Y;
-            g.FillRectangle(new SolidBrush(Color), (float)PosPlayer.X, (float)PosPlayer.Y, Size, Size);
+            g.FillRectangle(new SolidBrush(background), (float)Position.X, (float)Position.Y, Size, Size);
+            Position.X += Speed.X;
+            Position.Y += Speed.Y;
+            g.FillRectangle(new SolidBrush(Color), (float)Position.X, (float)Position.Y, Size, Size);
         }
     }
 }

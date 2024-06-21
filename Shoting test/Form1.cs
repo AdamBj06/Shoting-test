@@ -29,8 +29,8 @@ namespace Shoting_test
 
         Player p1 = new Player(Color.Black, 16, new Vettore(300, 300), new Vettore(0, 0), 2);
         Player p2 = new Player(Color.Green, 16, new Vettore(600, 300), new Vettore(0, 0), 2);
-        Projectile special = new Projectile(Color.Yellow, 4, 7, 0, 16);
-        Projectile special2 = new Projectile(Color.Yellow, 4, 7, 60000, 300000);
+        Projectile special = new Projectile("Special", Color.Yellow, 4, 7, 0, 16);
+        Projectile special2 = new Projectile("2° special", Color.Yellow, 4, 7, 60000, 300000);
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             p1.MoveStart(e, Keys.W, Keys.S, Keys.A, Keys.D);
@@ -59,8 +59,8 @@ namespace Shoting_test
             p2.MoveEnd(e, Keys.Up, Keys.Down, Keys.Left, Keys.Right);
         }
 
-        Projectile prj = new Projectile(Color.Red, 6, 6, 40);
-        Projectile bomb = new Projectile(Color.DarkGray, 10, 4, 4);
+        Projectile prj = new Projectile("Normal projectile", Color.Red, 6, 6, 40);
+        Projectile bomb = new Projectile("Bomb", Color.DarkGray, 10, 4, 4);
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Left)
@@ -91,7 +91,7 @@ namespace Shoting_test
 
             for (int i = 0; i < fruits.Count(); i++)
             {
-                if (new Rectangle((int)p1.PosPlayer.X, (int)p1.PosPlayer.Y, 16, 16).IntersectsWith(fruits[i]))
+                if (new Rectangle((int)p1.Position.X, (int)p1.Position.Y, 16, 16).IntersectsWith(fruits[i]))
                 {
                     g.FillRectangle(new SolidBrush(BackColor), fruits[i]);
                     fruits.RemoveAt(i);
@@ -112,9 +112,7 @@ namespace Shoting_test
             special.MoveProjectile(g, BackColor, ClientSize.Width, ClientSize.Height);
             special2.MoveProjectile(g, BackColor, ClientSize.Width, ClientSize.Height);
 
-            label1.Text = string.Format("{0}/{3} projectiles left; {1}/{4} bombs left; {2}/{5} special left; {6}/{7} 2° special left"
-                                        , prj.CurrentEnergy, bomb.CurrentEnergy, special.CurrentEnergy / 4, prj.Energy, bomb.Energy, special.Energy / 4
-                                        , special2.CurrentEnergy / 3, special2.Energy / 3);
+            label1.Text = string.Format("{0}; {1}; {2}; {3}", prj.ToString(), bomb.ToString(), special.ToString("4"), special2.ToString("3"));
         }
 
         private void timer2_Tick(object sender, EventArgs e)
