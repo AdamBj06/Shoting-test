@@ -29,15 +29,18 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.Main_Timer = new System.Windows.Forms.Timer(this.components);
             this.label1 = new System.Windows.Forms.Label();
-            this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.Refresh_Timer = new System.Windows.Forms.Timer(this.components);
+            this.SpecialAtk_Timer = new System.Windows.Forms.Timer(this.components);
+            this.Special2Atk_Timer = new System.Windows.Forms.Timer(this.components);
+            this.Prj2_Timer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
-            // timer1
+            // Main_Timer
             // 
-            this.timer1.Interval = 15;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.Main_Timer.Interval = 15;
+            this.Main_Timer.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // label1
             // 
@@ -48,10 +51,24 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "label1";
             // 
-            // timer2
+            // Refresh_Timer
             // 
-            this.timer2.Interval = 1000;
-            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
+            this.Refresh_Timer.Interval = 1000;
+            this.Refresh_Timer.Tick += new System.EventHandler(this.timer2_Tick);
+            // 
+            // SpecialAtk_Timer
+            // 
+            this.SpecialAtk_Timer.Tick += new System.EventHandler(this.SpecialAtk_Timer_Tick);
+            // 
+            // Special2Atk_Timer
+            // 
+            this.Special2Atk_Timer.Interval = 75;
+            this.Special2Atk_Timer.Tick += new System.EventHandler(this.Special2Atk_Timer_Tick);
+            // 
+            // Prj2_Timer
+            // 
+            this.Prj2_Timer.Interval = 35;
+            this.Prj2_Timer.Tick += new System.EventHandler(this.Prj2_Timer_Tick);
             // 
             // Form1
             // 
@@ -66,6 +83,7 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -73,9 +91,12 @@
 
         #endregion
 
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer Main_Timer;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Timer timer2;
+        private System.Windows.Forms.Timer Refresh_Timer;
+        private System.Windows.Forms.Timer SpecialAtk_Timer;
+        private System.Windows.Forms.Timer Special2Atk_Timer;
+        private System.Windows.Forms.Timer Prj2_Timer;
     }
 }
 
