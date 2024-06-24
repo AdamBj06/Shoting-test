@@ -46,7 +46,7 @@ namespace Shoting_test
             switch (format.ToUpperInvariant())
             {
                 case "G":
-                    return $"Pos: {Position.X}x, {Position.Y}y; Speed: {Speed.X}x, {Speed.Y}y;";
+                    return $"Pos: {Position.X}x, {Position.Y}y; Speed: {Speed.X}x, {Speed.Y}y; {Health}hp;";
                 default:
                     throw new FormatException(string.Format("The {0} format string is not supported.", format));
             }

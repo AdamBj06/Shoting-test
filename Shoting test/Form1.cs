@@ -166,4 +166,5 @@ namespace Shoting_test
  * (maybe):
  * add speed of recharging
  * (must):
+ * piercing
  */
