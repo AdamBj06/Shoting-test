@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Vettori;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace Shoting_test
 {
@@ -17,13 +15,15 @@ namespace Shoting_test
     {
         public Color Color { get; set;}
         public int Size { get; set;}
+        public int Health { get; set; }
         public Vettore Position { get; set; }
         public Vettore Speed { get; set; }
         public int SpeedValue { get; set; }
-        public Player(Color color, int size, Vettore initialPos, Vettore intialSpeed, int speedValue) 
+        public Player(Color color, int size, int health, Vettore initialPos, Vettore intialSpeed, int speedValue) 
         {
             Color = color;
             Size = size;
+            Health = health;
             Speed = intialSpeed;
             Position = initialPos;
             SpeedValue = speedValue;

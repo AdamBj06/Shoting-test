@@ -41,10 +41,10 @@ namespace Shoting_test
             keysPressed.Remove(e.KeyCode);
         }
 
-        Player p1 = new Player(Color.Black, 16, new Vettore(300, 300), new Vettore(0, 0), 2);
-        Player p2 = new Player(Color.Green, 16, new Vettore(600, 300), new Vettore(0, 0), 2);
-        Projectile prj = new Projectile("Normal projectile", Color.Red, 6, 6, 40);
-        Projectile bomb = new Projectile("Bomb", Color.DarkGray, 10, 4, 4);
+        Player p1 = new Player(Color.Black, 16, 100, new Vettore(300, 300), new Vettore(0, 0), 2);
+        Player p2 = new Player(Color.Green, 16, 100, new Vettore(600, 300), new Vettore(0, 0), 2);
+        Projectile prj = new Projectile("Normal projectile", Color.Red, 6, 5, 6, 40);
+        Projectile bomb = new Projectile("Bomb", Color.DarkGray, 10, 15, 4, 4);
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             mouseButtonsPressed.Add(e.Button);
@@ -63,9 +63,9 @@ namespace Shoting_test
             mouseButtonsPressed.Remove(e.Button);
         }
 
-        Projectile prj2 = new Projectile("Minigun projectile", Color.Red, 4, 6, 400);
-        Projectile special = new Projectile("Special", Color.Yellow, 4, 7, 0, 16);
-        Projectile special2 = new Projectile("2° special", Color.Yellow, 4, 7, 6, 30);
+        Projectile prj2 = new Projectile("Minigun projectile", Color.Red, 4, 1, 6, 400);
+        Projectile special = new Projectile("Special", Color.Yellow, 4, 40, 7, 0, 16);
+        Projectile special2 = new Projectile("2° special", Color.Yellow, 4, 25, 7, 6, 30);
         List<Rectangle> fruits = new List<Rectangle>();
         Random rnd = new Random();
         private void timer1_Tick(object sender, EventArgs e)
@@ -106,7 +106,19 @@ namespace Shoting_test
             special.MoveProjectile(g, BackColor, ClientSize.Width, ClientSize.Height);
             special2.MoveProjectile(g, BackColor, ClientSize.Width, ClientSize.Height);
 
-            label1.Text = string.Format("{0}; {1}; {2}; {3}; {4}", prj.ToString(), prj2.ToString(), bomb.ToString(), special.ToString("4"), special2.ToString("3"));
+            prj.CheckHit(p1);
+            prj.CheckHit(p2);
+            bomb.CheckHit(p1);
+            bomb.CheckHit(p2);
+            prj2.CheckHit(p1);
+            prj2.CheckHit(p2);
+            special.CheckHit(p1);
+            special.CheckHit(p2);
+            special2.CheckHit(p1);
+            special2.CheckHit(p2);
+
+            label1.Text = string.Format("{0}; {1}; {2}; {3}; {4}\n{5} p1 hp; {6} p2 hp"
+                                        , prj.ToString(), prj2.ToString(), bomb.ToString(), special.ToString("4"), special2.ToString("3"), p1.Health, p2.Health);
         }
 
         private void timer2_Tick(object sender, EventArgs e)
@@ -149,3 +161,9 @@ namespace Shoting_test
         }
     }
 }
+
+/* TO DO:
+ * (maybe):
+ * add speed of recharging
+ * (must):
+ */

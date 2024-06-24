@@ -8,28 +8,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Vettori;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace Shoting_test
 {
     public class Projectile : IFormattable
     {
         public string Name { get; set; }
-        public Color Color { get; }
+        public Color Color { get; set; }
         public int Size { get; set; }
         public double Speed { get; set; }
+        public int Damage { get; set; }
         public int Energy { get; set; }
         public int MaxEnergy { get; set; }
         public int CurrentEnergy { get; set;}
         public RectangleF[] Projectiles { get; set; }
-        private int ProjectileNum { get; set; }
+        public int ProjectileNum { get; set; }
         private bool ProjectileExists { get; set; }
         public Vettore[] Direction { get; set; }
-        public Projectile(string name, Color color, int size, double speed, int energy)
+        public Player[] Shooter { get; set; }
+        public Projectile(string name, Color color, int size, int damage, double speed, int energy)
         {
             Name = name;
             Color = color;
             Size = size;
+            Damage = damage;
             Speed = speed;
             Energy = energy;
             CurrentEnergy = Energy;
@@ -37,20 +40,23 @@ namespace Shoting_test
             ProjectileNum = 0;
             ProjectileExists = false;
             Direction = new Vettore[Energy];
+            Shooter = new Player[Energy];
         }
-        public Projectile(string name, Color color, int size, double speed, int initialEnergy, int maxEnergy)
+        public Projectile(string name, Color color, int size, int damage, double speed, int initialEnergy, int maxEnergy)
         {
             Name = name;
             Color = color;
             Size = size;
+            Damage = damage;
             Speed = speed;
             Energy = initialEnergy;
             MaxEnergy = maxEnergy;
             CurrentEnergy = Energy;
-            Projectiles = new RectangleF[maxEnergy];
+            Projectiles = new RectangleF[MaxEnergy];
             ProjectileNum = 0;
             ProjectileExists = false;
-            Direction = new Vettore[maxEnergy];
+            Direction = new Vettore[MaxEnergy];
+            Shooter = new Player[MaxEnergy];
         }
         public override string ToString()
         {
@@ -79,6 +85,7 @@ namespace Shoting_test
                     throw new FormatException(string.Format("The {0} format string is not supported.", format));
             }
         }
+        
         public void Shoot(int mx, int my, Player p)
         {
             if (CurrentEnergy > 0)
@@ -86,6 +93,7 @@ namespace Shoting_test
                 Direction[ProjectileNum] = new Vettore(mx - p.Position.X, p.Position.Y + p.Size / 2 - my).Versore();
 
                 Projectiles[ProjectileNum] = new RectangleF((float)p.Position.X + p.Size / 2, (float)p.Position.Y + p.Size / 2, Size, Size);
+                Shooter[ProjectileNum] = p;
                 ProjectileNum++;
                 CurrentEnergy--;
                 ProjectileExists = true;
@@ -98,13 +106,18 @@ namespace Shoting_test
                 Direction[ProjectileNum] = direction.Versore();
 
                 Projectiles[ProjectileNum] = new RectangleF((float)p.Position.X + p.Size / 2, (float)p.Position.Y + p.Size / 2, Size, Size);
+                Shooter[ProjectileNum] = p;
                 ProjectileNum++;
                 CurrentEnergy--;
                 ProjectileExists = true;
             }
         }
+        private Color Background;
+        private Graphics G;
         public void MoveProjectile(Graphics g, Color background, int BorderX, int BorderY)
         {
+            Background = background;
+            G = g;
             if (ProjectileExists)
             {
                 for (int i = 0; i < ProjectileNum; i++)
@@ -132,6 +145,23 @@ namespace Shoting_test
                 if (CurrentEnergy < Energy)
                 {
                     CurrentEnergy++;
+                }
+            }
+        }
+
+        public void CheckHit(Player p)
+        {
+            if(G == null || Background == null)
+            {
+                throw new Exception("Need to put a \"MoveProjectile\" first");
+            }
+            for (int i = 0; i < ProjectileNum; i++)
+            {
+                if (new RectangleF((float)p.Position.X, (float)p.Position.Y, 16, 16).IntersectsWith(Projectiles[i]) && p != Shooter[i])
+                {
+                    p.Health -= Damage;
+                    G.FillRectangle(new SolidBrush(Background), Projectiles[i]);
+                    Projectiles[i].Location = new Point(5000, 5000);
                 }
             }
         }
