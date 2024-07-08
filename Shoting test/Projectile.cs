@@ -17,22 +17,28 @@ namespace Shoting_test
         public Color Color { get; set; }
         public int Size { get; set; }
         public double Speed { get; set; }
+        public double RechargeSpeed { get; set; }// 0-1, 1 = max, 0 = no recharging;
         public int Damage { get; set; }
+        public bool Piercing { get; set; }
         public int Energy { get; set; }
         public int MaxEnergy { get; set; }
-        public int CurrentEnergy { get; set;}
+        public double CurrentEnergy { get; set;}
         public RectangleF[] Projectiles { get; set; }
         public int ProjectileNum { get; set; }
         private bool ProjectileExists { get; set; }
         public Vettore[] Direction { get; set; }
         public Player[] Shooter { get; set; }
-        public Projectile(string name, Color color, int size, int damage, double speed, int energy)
+        public Projectile(string name, Color color, int size, int damage, double speed, double rechargeSpeed, bool piercing, int energy)
         {
             Name = name;
             Color = color;
             Size = size;
             Damage = damage;
             Speed = speed;
+            RechargeSpeed = rechargeSpeed;
+            if(rechargeSpeed < 0 || rechargeSpeed > 1) { throw new Exception("Recharge speed must be equal or between 0 and 1"); }
+            Piercing = piercing;
+            Damage = Piercing == true ? Damage / 3 : Damage;
             Energy = energy;
             CurrentEnergy = Energy;
             Projectiles = new RectangleF[Energy];
@@ -41,13 +47,16 @@ namespace Shoting_test
             Direction = new Vettore[Energy];
             Shooter = new Player[Energy];
         }
-        public Projectile(string name, Color color, int size, int damage, double speed, int initialEnergy, int maxEnergy)
+        public Projectile(string name, Color color, int size, int damage, double speed, double rechargeSpeed, bool piercing, int initialEnergy, int maxEnergy)
         {
             Name = name;
             Color = color;
             Size = size;
             Damage = damage;
             Speed = speed;
+            RechargeSpeed = rechargeSpeed;
+            Piercing = piercing;
+            Damage = Piercing == true ? Damage / 3 : Damage;
             Energy = initialEnergy;
             MaxEnergy = maxEnergy;
             CurrentEnergy = Energy;
@@ -75,11 +84,11 @@ namespace Shoting_test
             switch (format.ToUpperInvariant())
             {
                 case "G":
-                    return $"{CurrentEnergy}/{Energy} {Name}s left";
+                    return $"{CurrentEnergy:0}/{Energy} {Name}s left";
                 case "3":
-                    return $"{CurrentEnergy/3}/{Energy/3} {Name}s left";
+                    return $"{CurrentEnergy/3:0}/{Energy/3} {Name}s left";
                 case "4":
-                    return $"{CurrentEnergy/4}/{Energy/4} {Name}s left";
+                    return $"{CurrentEnergy/4:0}/{Energy/4} {Name}s left";
                 default:
                     throw new FormatException(string.Format("The {0} format string is not supported.", format));
             }
@@ -143,7 +152,7 @@ namespace Shoting_test
                 ProjectileNum = 0;
                 if (CurrentEnergy < Energy)
                 {
-                    CurrentEnergy++;
+                    CurrentEnergy += RechargeSpeed;
                 }
             }
         }
@@ -159,8 +168,11 @@ namespace Shoting_test
                 if (new RectangleF((float)p.Position.X, (float)p.Position.Y, 16, 16).IntersectsWith(Projectiles[i]) && p != Shooter[i])
                 {
                     p.Health -= Damage;
-                    G.FillRectangle(new SolidBrush(Background), Projectiles[i]);
-                    Projectiles[i].Location = new Point(5000, 5000);
+                    if (!Piercing)
+                    {
+                        G.FillRectangle(new SolidBrush(Background), Projectiles[i]);
+                        Projectiles[i].Location = new Point(5000, 5000);
+                    }
                 }
             }
         }

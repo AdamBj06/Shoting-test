@@ -43,8 +43,8 @@ namespace Shoting_test
 
         Player p1 = new Player(Color.Black, 16, 100, new Vettore(300, 300), new Vettore(0, 0), 2);
         Player p2 = new Player(Color.Green, 16, 100, new Vettore(600, 300), new Vettore(0, 0), 2);
-        Projectile prj = new Projectile("Normal projectile", Color.Red, 6, 5, 6, 40);
-        Projectile bomb = new Projectile("Bomb", Color.DarkGray, 10, 15, 4, 4);
+        Projectile prj = new Projectile("Normal projectile", Color.Red, 6, 5, 6, 1, true, 40);
+        Projectile bomb = new Projectile("Bomb", Color.DarkGray, 10, 15, 4, 0.3, false, 4);
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             mouseButtonsPressed.Add(e.Button);
@@ -63,9 +63,9 @@ namespace Shoting_test
             mouseButtonsPressed.Remove(e.Button);
         }
 
-        Projectile prj2 = new Projectile("Minigun projectile", Color.Red, 4, 1, 6, 400);
-        Projectile special = new Projectile("Special", Color.Yellow, 4, 40, 7, 0, 16);
-        Projectile special2 = new Projectile("2° special", Color.Yellow, 4, 25, 7, 6, 30);
+        Projectile prj2 = new Projectile("Minigun projectile", Color.Red, 4, 1, 6, 0.1d, false, 400);
+        Projectile special = new Projectile("Special", Color.Yellow, 4, 40, 7, 1, true, 0, 16);
+        Projectile special2 = new Projectile("2° special", Color.Yellow, 4, 25, 7, 0.4d, true, 6, 30);
         List<Rectangle> fruits = new List<Rectangle>();
         Random rnd = new Random();
         private void timer1_Tick(object sender, EventArgs e)
@@ -164,7 +164,5 @@ namespace Shoting_test
 
 /* TO DO:
  * (maybe):
- * add speed of recharging
  * (must):
- * piercing
  */
